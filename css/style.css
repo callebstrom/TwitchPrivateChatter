@@ -1,0 +1,15 @@
+#chat-autocompleter {
+	display: none;
+	width: 300px;
+	max-height: 100px;
+	overflow-y: scroll;
+	position: absolute;
+	background-color: white;
+	background: white;
+	right: 300px;
+	z-index: 33300;
+}
+
+#chat-autocompleter > ul > li.selected {
+	background-color: #CCC;
+}

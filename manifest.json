@@ -1,0 +1,30 @@
+{
+  "name": "Twitch Private Chat Message Made Easy",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_icon": "logo16.png",
+    "default_title": "Twitch Private Chat Message Made Easy",
+    "default_popup": "popup.html"
+  },
+
+  "web_accessible_resources": [
+    "img/*.png",
+    "css/*.css",
+    "js/*.js",
+    "js/*.html",
+    "*.html"
+  ],
+
+  "icons": { "16": "logo16.png",
+           "48": "logo48.png",
+          "128": "logo128.png" },
+
+  "content_scripts": [
+    {
+        "matches": ["http://www.twitch.tv/*"],
+        "js": ["js/jquery.js", "js/content.js"],
+        "css": ["css/style.css"]
+    }
+  ]
+}
