@@ -6,6 +6,7 @@ window.addEventListener("load", function() {
       </div>");
     var autocompleteList = [];
     var keypressMutex = 0;
+    var indexOfAt = 0;
 
     $(".ember-text-area").keydown(function(e){ //Prevents text area cursor from moving
       switch(e.which) {
@@ -23,6 +24,12 @@ window.addEventListener("load", function() {
 
       switch(e.which) {
 
+          case 39:
+            e.preventDefault();
+            var usernameToInsert = $("#chat-autocompleter > ul > li.selected > span").text();
+            insertUsername("ember1219", usernameToInsert);
+          break
+
           case 38: // Move selection up
             e.preventDefault();
             moveSelectionUp();
@@ -36,6 +43,7 @@ window.addEventListener("load", function() {
           default:
           removeAutoCompleter();
           if($(".ember-text-area").val().indexOf("\@") >= 0) {
+          indexOfAt = $(".ember-text-area").val().indexOf("\@");
           var inputName = $(".ember-text-area").val().split(/\@/);
           if(inputName[1] != "" && inputName[1] != null) {
             getUsers(inputName[1]);
@@ -74,7 +82,7 @@ window.addEventListener("load", function() {
 
       else {
         $("#chat-autocompleter > ul > li.selected").removeClass("selected");
-        var lastIndexOfLi = $("#chat-autocompleter > ul > li").get(lastIndexOfSelected-2);
+        var lastIndexOfLi = $("#chat-autocompleter > ul > li").get(lastIndexOfSelected+2);
         $(lastIndexOfLi).addClass("selected");
       }
     }
@@ -139,6 +147,40 @@ window.addEventListener("load", function() {
       }
       return arr;
     };
+
+    function insertUsername(areaId,text) {
+      var txtarea = document.getElementById(areaId);
+      var scrollPos = txtarea.scrollTop;
+      var strPos = 0;
+      var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ? 
+          "ff" : (document.selection ? "ie" : false ) );
+      if (br == "ie") { 
+          txtarea.focus();
+          var range = document.selection.createRange();
+          range.moveStart (indexOfAt, -txtarea.value.length);
+          strPos = range.text.length;
+      }
+      else if (br == "ff") strPos = txtarea.selectionStart;
+
+      var front = (txtarea.value).substring(0,strPos);  
+      var back = (txtarea.value).substring(strPos,txtarea.value.length); 
+      txtarea.value=front+text+back;
+      strPos = strPos + text.length;
+      if (br == "ie") { 
+          txtarea.focus();
+          var range = document.selection.createRange();
+          range.moveStart (indexOfAt, -txtarea.value.length);
+          range.moveStart (indexOfAt, strPos);
+          range.moveEnd (indexOfAt, 0);
+          range.select();
+      }
+      else if (br == "ff") {
+          txtarea.selectionStart = strPos;
+          txtarea.selectionEnd = strPos;
+          txtarea.focus();
+      }
+      txtarea.scrollTop = scrollPos;
+    }
 
 
 }, true);
