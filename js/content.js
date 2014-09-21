@@ -7,29 +7,10 @@ window.addEventListener("load", function() {
     var autocompleteList = [];
     var keypressMutex = 0;
     var indexOfAt = 0;
+    var scrollOffset = 0;
 
     $(".ember-text-area").keydown(function(e){ //Prevents text area cursor from moving
       switch(e.which) {
-          case 38: // Move selection up
-            e.preventDefault();
-          break;
-
-          case 40: // Move selection down
-            e.preventDefault();
-          break;
-      }
-    });
-
-    $(".ember-text-area").keyup(function(e){
-
-      switch(e.which) {
-
-          case 39:
-            e.preventDefault();
-            var usernameToInsert = $("#chat-autocompleter > ul > li.selected > span").text();
-            insertUsername("ember1219", usernameToInsert);
-          break
-
           case 38: // Move selection up
             e.preventDefault();
             moveSelectionUp();
@@ -38,6 +19,28 @@ window.addEventListener("load", function() {
           case 40: // Move selection down
             e.preventDefault();
             moveSelectionDown();
+          break;
+      }
+    });
+
+    $(".ember-text-area").keyup(function(e){
+
+      switch(e.which) {
+          case 39:
+            e.preventDefault();
+            var usernameToInsert = $("#chat-autocompleter > ul > li.selected > span").text();
+            insertUsername(usernameToInsert);
+          break
+
+          case 38: // Move selection up
+            e.preventDefault();
+
+
+          break;
+
+          case 40: // Move selection down
+            e.preventDefault();
+
           break;
 
           default:
@@ -60,12 +63,14 @@ window.addEventListener("load", function() {
         var indexOfLast = $("#chat-autocompleter > ul > li").index( $("#chat-autocompleter > ul > li:last-child"));
         var lastLi = $("#chat-autocompleter > ul > li").get(indexOfLast-1);
         $(lastLi).addClass("selected");
+        $("#chat-autocompleter").scrollTop($("#chat-autocompleter > ul > li.selected").offset().top - $("#chat-autocompleter").scrollTop());
       }
 
       else {
         $("#chat-autocompleter > ul > li.selected").removeClass("selected");
         var lastIndexOfLi = $("#chat-autocompleter > ul > li").get(lastIndexOfSelected-2);
         $(lastIndexOfLi).addClass("selected");
+        $("#chat-autocompleter").scrollTop($("#chat-autocompleter").scrollTop() - 18);
       }
     }
 
@@ -78,24 +83,34 @@ window.addEventListener("load", function() {
         var indexOfFirst = $("#chat-autocompleter > ul > li").index( $("#chat-autocompleter > ul > li:first-child"));
         var firstLi = $("#chat-autocompleter > ul > li").get(indexOfFirst);
         $(firstLi).addClass("selected");
+        $("#chat-autocompleter").scrollTop(0);
+        scrollOffset = 0;
       }
 
       else {
         $("#chat-autocompleter > ul > li.selected").removeClass("selected");
         var lastIndexOfLi = $("#chat-autocompleter > ul > li").get(lastIndexOfSelected+2);
         $(lastIndexOfLi).addClass("selected");
+        $("#chat-autocompleter").scrollTop(scrollOffset);
+        scrollOffset += 18;
       }
     }
 
-    function getUsers(inputName) {
+    function getUsers(inputName) { //Function that matches user input with users in chat and puts matches in autocompleteList
       autocompleteList = [];
       $($(".chat-line > span.from").get().reverse()).each(function() { 
         var username = $(this).text(); 
-        if (username.toLowerCase().indexOf(inputName.toLowerCase()) >= 0) {
-          autocompleteList.push(username);
+        console.debug("inputName length = " + inputName.length);
+        for(var i = 0; i < inputName.length; i++) {
+          if(username.toLowerCase().indexOf(inputName.toLowerCase()) >= 0) { //Matching parts of user input to existing users
+            console.debug("input " + inputName + " is matching " + username);
+            autocompleteList.push(username);
+          }
+          else {
 
-          console.debug(autocompleteList.length);
+          }
         }
+
       });
       autocompleteList = removeDuplicatesInPlace(autocompleteList);
       addAutoCompleter();
@@ -148,38 +163,10 @@ window.addEventListener("load", function() {
       return arr;
     };
 
-    function insertUsername(areaId,text) {
-      var txtarea = document.getElementById(areaId);
-      var scrollPos = txtarea.scrollTop;
-      var strPos = 0;
-      var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ? 
-          "ff" : (document.selection ? "ie" : false ) );
-      if (br == "ie") { 
-          txtarea.focus();
-          var range = document.selection.createRange();
-          range.moveStart (indexOfAt, -txtarea.value.length);
-          strPos = range.text.length;
-      }
-      else if (br == "ff") strPos = txtarea.selectionStart;
-
-      var front = (txtarea.value).substring(0,strPos);  
-      var back = (txtarea.value).substring(strPos,txtarea.value.length); 
-      txtarea.value=front+text+back;
-      strPos = strPos + text.length;
-      if (br == "ie") { 
-          txtarea.focus();
-          var range = document.selection.createRange();
-          range.moveStart (indexOfAt, -txtarea.value.length);
-          range.moveStart (indexOfAt, strPos);
-          range.moveEnd (indexOfAt, 0);
-          range.select();
-      }
-      else if (br == "ff") {
-          txtarea.selectionStart = strPos;
-          txtarea.selectionEnd = strPos;
-          txtarea.focus();
-      }
-      txtarea.scrollTop = scrollPos;
+    function insertUsername(username) {
+      var allInput = $(".ember-text-area").val();
+      var newInput = allInput.replace(/\@[0-9a-z]+/, "\@"+username);
+      $(".ember-text-area").val(newInput);
     }
 
 

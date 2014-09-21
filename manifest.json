@@ -1,10 +1,10 @@
 {
-  "name": "Twitch Private Chat Message Made Easy",
-  "version": "0.0.1",
+  "name": "Twitch Chat Username Autocompleter",
+  "version": "1.0.0",
   "manifest_version": 2,
   "browser_action": {
     "default_icon": "logo16.png",
-    "default_title": "Twitch Private Chat Message Made Easy",
+    "default_title": "Twitch Chat Username Autocompleter",
     "default_popup": "popup.html"
   },
 

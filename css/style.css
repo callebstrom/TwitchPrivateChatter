@@ -1,6 +1,6 @@
 #chat-autocompleter {
 	display: none;
-	width: 300px;
+	width: auto;
 	max-height: 100px;
 	overflow-y: scroll;
 	position: absolute;
@@ -12,4 +12,14 @@
 
 #chat-autocompleter > ul > li.selected {
 	background-color: #CCC;
+}
+
+#chat-autocompleter > ul > li {
+	text-align: center;
+	list-style: none;
+}
+
+#chat-autocompleter > ul > li > span {
+	padding-left: 25px;
+	padding-right: 25px;
 }
