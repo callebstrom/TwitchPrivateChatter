@@ -1,5 +1,7 @@
-CS:GO Lounge Match History - Making betting easier
+Twitch Private Chatter
 =====================================
+
+NOTE: This extension is deprecated as Twitch added functionality for this.
 
 This is a Chrome extension that allows the user to easily message a specific user in the Twitch.tv stream chat. [Get it here!](https://). 
 
